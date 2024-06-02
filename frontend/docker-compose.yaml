@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  nuxt-frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nuxt-frontend
+    ports:
+      - "3000:3000"
+      - "4000:4000"
+    environment:
+      - NUXT_PROXY_URL=http://java-backend:8080

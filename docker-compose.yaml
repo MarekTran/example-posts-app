@@ -1,0 +1,6 @@
+version: '3.8'
+
+# Include backend
+include:
+  - backend/docker-compose.yaml
+  - frontend/docker-compose.yaml

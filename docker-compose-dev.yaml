@@ -1,0 +1,20 @@
+version: '3.8'
+
+# Include backend
+include:
+  - backend/docker-compose-dev.yaml
+
+services:
+  devcontainer:
+    hostname: localhost
+    volumes:
+      - ..:/workspaces:cached
+    build:
+      context: ./.devcontainer
+    command: sleep infinity
+    ports:
+      - "3000:3000"
+      - "4000:4000"
+    environment:
+      - NUXT_PROXY_URL=http://java-backend:8080
+      - NUXT_BUCKET_PROXY_URL=http://minio:9000
