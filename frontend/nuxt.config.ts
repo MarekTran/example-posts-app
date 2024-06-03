@@ -2,8 +2,13 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ["@nuxtjs/tailwindcss",
-
   ],
+  // css: [
+  //   '~/node_modules/flowbite-vue/dist/index.css'
+  // ],
+  tailwindcss: {
+    cssPath: '~/assets/css/main.css',
+  },
   runtimeConfig: {
     // The private keys which are only available within server-side
     proxyUrl: process.env.NUXT_PROXY_URL,

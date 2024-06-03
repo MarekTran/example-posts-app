@@ -1,31 +1,19 @@
-<template>
-  <div class="flex flex-col min-h-screen bg-slate-500">
-    <main class="mx-auto my-5 flex w-full max-w-3xl grow flex-col items-center justify-start rounded-2xl bg-gray-100/95 p-4 px-2 shadow-2xl sm:px-6 lg:px-8">
-      <h1 class="text-5xl font-bold">
-        {{ $config.public.someUrl || 'No Value'}}
-      </h1>
-      <h1 class="text-5xl font-bold">Add Post</h1>
-      <section class="min-h-[200px] w-full bg-slate-600"></section>
-      <h1 class="text-5xl font-bold">Posts</h1>
-      <section class="w-full grow flex-col items-center justify-start bg-slate-200 rounded-xl">
-        <div v-for="post in posts" :key="post.id" class="max-h-[440px] border-2 border-black rounded-xl p-4">
-          <h2 class="text-3xl font-bold"> {{ post.title }} </h2>
-          <p> {{ post.content }} </p>
-          <div v-for="url in post.urls" :key="url">
-            <a :href="url">{{ url }}</a>
-            <img :src="url">
-          </div>
-        </div>
-      </section>
-    </main>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useFetch } from '#app'
+import { initFlowbite } from 'flowbite'
 
 const posts = ref([])
+
+const { data: cats } = await useAsyncData('cats', () => $fetch('https://api.thecatapi.com/v1/images/search',
+  {
+    method: 'GET',
+    params: {
+      limit: 4
+    }
+  }
+)) 
+
 
 const fetchPostUrls = async (postId) => {
   try {
@@ -50,11 +38,38 @@ const fetchPosts = async () => {
       const urls = await fetchPostUrls(post.id)
       return { ...post, urls }
     }))
-    posts.value = postsWithUrls
+    posts.value = postsWithUrls as never[]
   } catch (error) {
     console.error('Failed to fetch posts', error)
   }
 }
 
-onMounted(fetchPosts)
+// const getProxiedUrl = (url) => {
+//   return `/api/proxy?url=${encodeURIComponent(url)}`;
+// }
+
+// initialize components based on data attribute selectors
+onMounted(() => {
+  fetchPosts();
+  // initFlowbite();
+})
 </script>
+
+
+<template>
+  <div class="flex flex-col min-h-screen bg-slate-500">
+    <main class="mx-auto my-5 flex w-full max-w-3xl grow flex-col items-center justify-start rounded-2xl bg-gray-100/95 p-4 px-2 shadow-2xl sm:px-6 lg:px-8 space-y-4">
+      <h1 class="text-5xl font-bold">
+        {{ $config.public.someUrl || 'Placeholder'}}
+      </h1>
+      <Carousel :cats="cats"/>
+      <h1 class="text-5xl font-bold">Add Post</h1>
+      <section class="min-h-[200px] w-full bg-slate-600"></section>
+      <h1 class="text-5xl font-bold">Posts</h1>
+      <section class="w-full flex flex-col items-center justify-start bg-slate-200 rounded-xl space-y-4">
+        <Post v-for="post in posts" :key="post.id" :post="post"/>
+      </section>
+    </main>
+  </div>
+</template>
+
