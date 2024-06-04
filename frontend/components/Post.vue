@@ -8,9 +8,9 @@ onMounted(() => {
 })
 
 const props = defineProps(['post'])
-const getProxiedUrl = (url) => {
-  return `/api/proxy?url=${encodeURIComponent(url)}`;
-}
+// const getProxiedUrl = (url) => {
+//   return `/api/proxy?url=${encodeURIComponent(url)}`;
+// }
 </script>
 
 <template>
@@ -22,8 +22,11 @@ const getProxiedUrl = (url) => {
       <div class="relative aspect-square min-h-[12rem] max-h-[48rem] overflow-hidden rounded-lg md:h-96">
         <div v-for="(url, index) in post.urls" :key="url" class="hidden duration-700 ease-in-out"
           :data-carousel-item="index === 0 ? 'active' : ''">
-          <img :src="getProxiedUrl(url)" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+          <!-- Main image -->
+          <img :src="url" class="absolute h-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
             alt="post image" />
+          <!-- Blurred background image -->
+          <img :src="url" class="absolute top-1/2 left-1/2 w-full block -translate-x-1/2 -translate-y-1/2 object-cover blur-lg -z-10" alt="post image blurred" />
         </div>
       </div>
       <!-- Slider indicators -->

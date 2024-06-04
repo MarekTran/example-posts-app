@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useFetch } from '#app'
-import { initFlowbite } from 'flowbite'
+// import { initFlowbite } from 'flowbite'
 
 const posts = ref([])
 
@@ -13,7 +13,6 @@ const { data: cats } = await useAsyncData('cats', () => $fetch('https://api.thec
     }
   }
 )) 
-
 
 const fetchPostUrls = async (postId) => {
   try {
@@ -31,11 +30,11 @@ const fetchPosts = async () => {
   try {
     const { data } = await useFetch('/api/posts/get', {
       method: 'GET',
-      params: { desc: true, numberOfPosts: 3 }
+      params: { desc: true, numberOfPosts: 4 }
     })
     const fetchedPosts = data.value || []
     const postsWithUrls = await Promise.all(fetchedPosts.map(async (post) => {
-      const urls = await fetchPostUrls(post.id)
+      const urls = (await fetchPostUrls(post.id)).map(getProxiedUrl);
       return { ...post, urls }
     }))
     posts.value = postsWithUrls as never[]
@@ -44,14 +43,13 @@ const fetchPosts = async () => {
   }
 }
 
-// const getProxiedUrl = (url) => {
-//   return `/api/proxy?url=${encodeURIComponent(url)}`;
-// }
+const getProxiedUrl = (url: string) => {
+  return `/api/proxy?url=${encodeURIComponent(url)}`;
+}
 
 // initialize components based on data attribute selectors
 onMounted(() => {
   fetchPosts();
-  // initFlowbite();
 })
 </script>
 
@@ -64,7 +62,10 @@ onMounted(() => {
       </h1>
       <Carousel :cats="cats"/>
       <h1 class="text-5xl font-bold">Add Post</h1>
-      <section class="min-h-[200px] w-full bg-slate-600"></section>
+      <section class="min-h-[200px] w-full bg-slate-600">
+        
+
+      </section>
       <h1 class="text-5xl font-bold">Posts</h1>
       <section class="w-full flex flex-col items-center justify-start bg-slate-200 rounded-xl space-y-4">
         <Post v-for="post in posts" :key="post.id" :post="post"/>
