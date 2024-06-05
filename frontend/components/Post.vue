@@ -17,7 +17,7 @@ const props = defineProps(['post'])
   <div class="bg-gray-300/50 rounded-xl max-h-[50rem] flex flex-col items-center justify-start p-4">
     <h2 class="text-3xl font-bold"> {{ post.title }} </h2>
     <p> {{ post.content }} </p>
-    <div id="indicators-carousel" class="relative min-w-[12rem]" data-carousel="static">
+    <div id="indicators-carousel" class="relative min-w-[12rem]" data-carousel="static" v-if="post.urls && post.urls.length > 0">
       <!-- Carousel wrapper -->
       <div class="relative aspect-square min-h-[12rem] max-h-[48rem] overflow-hidden rounded-lg md:h-96">
         <div v-for="(url, index) in post.urls" :key="url" class="hidden duration-700 ease-in-out"

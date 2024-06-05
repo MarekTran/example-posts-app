@@ -171,4 +171,13 @@ public class PostService {
                 .collect(Collectors.toList());
         return preSignedImages;
     }
+
+    @Transactional
+    public void handleNewPostWithImages(Post post, List<MultipartFile> files) throws Exception {
+        // Add post-entry
+        post = createPost(post);
+        for (MultipartFile file : files) {
+            uploadImage(post.getId(), file);
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package org.example.backend;
 
+import org.apache.coyote.Response;
 import org.example.backend.models.Image;
 import org.example.backend.models.Post;
 import org.slf4j.Logger;
@@ -30,6 +31,31 @@ public class PostController {
             return ResponseEntity.ok(postService.getPostById(id));
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    @CrossOrigin(origins="*")
+    @PostMapping("/post/new")
+    public ResponseEntity<Post> newPostWithImages(@RequestParam("title") String title,
+                                                    @RequestParam("content") String content,
+                                                    @RequestParam(value = "files", required = false) List<MultipartFile> files) {
+        Post post = Post.builder().title(title).content(content).build();
+        logger.info("POST /post/new", post.getTitle());
+        // If no files, just create a post
+        if (files == null || files.isEmpty()){
+            try {
+                return ResponseEntity.ok(postService.createPost(post));
+            } catch (Exception e) {
+                return ResponseEntity.internalServerError().build();
+            }
+        }
+        // If there are files, create post and add images to it
+        try {
+            postService.handleNewPostWithImages(post, files);
+            return ResponseEntity.ok(post);
+        } catch (Exception e) {
+            logger.error("POST ERROR 500 Multiple image upload: "+ e.getMessage());
+            return ResponseEntity.internalServerError().build();
         }
     }
 

@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@nuxtjs/tailwindcss": "^6.12.0",
+    "@zakerxa/vue-multiple-image-upload": "^1.0.10",
     "axios": "^1.7.2",
     "flowbite": "^2.3.0",
     "flowbite-vue": "^0.1.5",
