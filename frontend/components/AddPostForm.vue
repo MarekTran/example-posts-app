@@ -1,6 +1,6 @@
 <template>
   <!-- FORM CONTAINER-->
-  <div class="flex w-full flex-col items-center rounded-xl bg-red-300/50">
+  <div class="flex w-full flex-col items-center rounded-xl bg-red-300/50 py-4">
     <form @submit.prevent="handleSubmit" class="grid grid-cols-2 gap-4 p-4">
       <label for="title">Title</label>
       <input type="text" id="title" v-model="formData.title" maxlength="30"

@@ -1,25 +1,106 @@
-<script setup>
+<script setup lang="ts">
 import { onMounted } from 'vue'
 import { initCarousels, } from 'flowbite'
+
+// Interface for the post object
+interface Post {
+  id: number; 
+  title: string;
+  content: string;
+  createdAt: string; 
+  upvote: number;
+  downvote: number;
+  urls: string[];
+}
 
 // initialize components based on data attribute selectors
 onMounted(() => {
   initCarousels();
 })
 
-const props = defineProps(['post'])
-// const getProxiedUrl = (url) => {
-//   return `/api/proxy?url=${encodeURIComponent(url)}`;
+// Define props with type
+const props = defineProps<{
+  post: Post;
+}>()
+
+const emit = defineEmits(['postModified']);
+
+const handleUpvote = async (postId: number) => {
+  console.log('Upvoting postID:', postId);
+  try {
+    const updatedPost = await $fetch(`/api/post/${postId}/upvote`, {
+      method: 'POST',
+    });
+    console.log(updatedPost);
+    if (updatedPost) {
+      props.post.upvote = updatedPost.upvote;
+      console.log('Post upvoted:', props.post);
+      emit('postModified', props.post);  // Emit the updated post
+    }
+  } catch (error) {
+    console.error('Error upvoting the post:', error);
+  }
+};
+
+const handleDownvote = async (postId: number) => {
+  console.log('Downvoting postID:', postId);
+  try {
+    const updatedPost = await $fetch(`/api/post/${postId}/downvote`, {
+      method: 'POST',
+    });
+    console.log(updatedPost);
+    if (updatedPost) {
+      props.post.downvote = updatedPost.downvote;
+      console.log('Post downvoted:', props.post);
+      emit('postModified', props.post);  // Emit the updated post
+    }
+  } catch (error) {
+    console.error('Error downvoting the post:', error);
+  }
+};
+
+// const handleUpvote = async (postId: number) => {
+//   // Send a POST request to upvote the post.
+//   try {
+//     const response = await $fetch(`/api/post/${postId}/upvote`, {
+//       method: 'POST',
+//     })
+//     if (response.ok) {
+//       // Update the post object with the new upvote count
+//       props.post.upvote += 1;
+//       // emit('postUpvoted', props.post.id);
+//       emit('postModified');
+//     }
+//   } catch (error) {
+//     console.error('Error upvoting the post:', error);
+//   }
 // }
+// const handleDownvote = async (postId: number) => {
+//   // Send a POST request to upvote the post.
+//   try {
+//     const response = await $fetch(`/api/post/${postId}/downvote`, {
+//       method: 'POST',
+//     })
+//     if (response.ok) {
+//       // Update the post object with the new downvote count
+//       props.post.downvote += 1;
+//       // emit('postDownvoted', props.post.id);
+//       emit('postModified');
+//     }
+//   } catch (error) {
+//     console.error('Error upvoting the post:', error);
+//   }
+// }
+
 </script>
 
 <template>
-  <div class="bg-gray-300/50 rounded-xl max-h-[50rem] flex flex-col items-center justify-start p-4">
+  <div class="bg-gray-300/50 rounded-xl min-w-[26rem] max-h-[50rem] flex flex-col items-center justify-start p-4">
     <h2 class="text-3xl font-bold"> {{ post.title }} </h2>
     <p> {{ post.content }} </p>
     <div id="indicators-carousel" class="relative min-w-[12rem]" data-carousel="static" v-if="post.urls && post.urls.length > 0">
       <!-- Carousel wrapper -->
-      <div class="relative aspect-square min-h-[12rem] max-h-[48rem] overflow-hidden rounded-lg md:h-96">
+      <div class="relative aspect-square min-h-[12rem] overflow-hidden rounded-lg md:h-96">
         <div v-for="(url, index) in post.urls" :key="url" class="hidden duration-700 ease-in-out"
           :data-carousel-item="index === 0 ? 'active' : ''">
           <!-- Main image -->
@@ -63,6 +144,11 @@ const props = defineProps(['post'])
           <span class="sr-only">Next</span>
         </span>
       </button>
+    </div>
+    <!-- Carousel wrapper end-->
+    <div class="flex w-full justify-between p-4">
+      <button @click="handleUpvote(post.id)" class="bg-green-300 hover:bg-green-500 text-white font-bold py-2 px-2 rounded-full">Upvotes {{ post.upvote }} ⬆️</button>
+      <button @click="handleDownvote(post.id)" class="bg-red-300 hover:bg-red-500 text-white font-bold py-2 px-2 rounded-full">Downvotes {{ post.downvote }} ⬇️</button>
     </div>
   </div>
 </template>

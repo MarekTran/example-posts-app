@@ -46,6 +46,14 @@ const getProxiedUrl = (url: string) => {
   return `/api/proxy?url=${encodeURIComponent(url)}`;
 }
 
+const handlePostModified = (updatedPost) => {
+  console.log('Post modified, updating post data', updatedPost);
+  const index = posts.value.findIndex(post => post.id === updatedPost.id);
+  if (index !== -1) {
+    posts.value[index] = updatedPost;
+  }
+}
+
 // initialize components based on data attribute selectors
 onMounted(() => {
   fetchPosts();
@@ -66,7 +74,7 @@ onMounted(() => {
       </section>
       <h1 class="text-5xl font-bold">Posts</h1>
       <section class="w-full flex flex-col items-center justify-start bg-slate-200 rounded-xl space-y-4">
-        <Post v-for="post in posts" :key="post.id" :post="post"/>
+        <Post v-for="post in posts" :key="post.id" :post="post" @postModified="handlePostModified"/>
       </section>
     </main>
   </div>

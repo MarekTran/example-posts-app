@@ -18,4 +18,5 @@ export default defineNuxtConfig({
       someUrl: process.env.PROXY_URL,
     }
   },
+  watch: ['~/components/*.vue', '~/components/**/*.vue', '~/layouts/**/*.vue', '~/pages/**/*.vue', '~/plugins/**/*.ts', '~/nuxt.config.ts'],
 })

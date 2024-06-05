@@ -23,6 +23,13 @@ public class PostController {
     @Autowired
     public PostController(PostService postService) { this.postService = postService; }
 
+    /**
+     * Handles GET requests to retrieve a post by its ID.
+     *
+     * @param id The ID of the post to retrieve.
+     * @return A ResponseEntity containing the post if found, or a 404 Not Found status if not found.
+     * @throws Exception if an error occurs during retrieval.
+     */
     @CrossOrigin(origins = "*")
     @GetMapping("/post")
     public ResponseEntity<Post> getPostById(@RequestParam Long id) {
@@ -34,6 +41,14 @@ public class PostController {
         }
     }
 
+    /**
+     * Handles POST request to create a post with zero or multiple files
+     *
+     * @param title
+     * @param content
+     * @param files
+     * @return
+     */
     @CrossOrigin(origins="*")
     @PostMapping("/post/new")
     public ResponseEntity<Post> newPostWithImages(@RequestParam("title") String title,
@@ -59,6 +74,12 @@ public class PostController {
         }
     }
 
+    /**
+     * Handles creation of a post with no images.
+     *
+     * @param post
+     * @return
+     */
     @CrossOrigin(origins = "*")
     @PostMapping("/post/add")
     public ResponseEntity<Post> createPost(@RequestBody Post post) {
@@ -70,6 +91,13 @@ public class PostController {
         }
     }
 
+    /**
+     * Handles retrieval of numberOfPosts posts in sorted order.
+     *
+     * @param desc
+     * @param numberOfPosts
+     * @return
+     */
     @CrossOrigin(origins = "*")
     @GetMapping("/posts/get")
     public ResponseEntity<List<Post>> getPostsSorted(@RequestParam boolean desc, @RequestParam int numberOfPosts) {
@@ -77,6 +105,12 @@ public class PostController {
         return ResponseEntity.of(Optional.ofNullable(postService.getNSortedPosts(numberOfPosts, desc)));
     }
 
+    /**
+     * Handles upvote of post by ID
+     *
+     * @param id
+     * @return
+     */
     @CrossOrigin(origins = "*")
     @PostMapping("/post/{id}/upvote")
     public ResponseEntity<Post> incrementUpvote(@PathVariable Long id) {
@@ -88,6 +122,13 @@ public class PostController {
             return ResponseEntity.status(404).body(null);
         }
     }
+
+    /**
+     * Handles downvote of post by ID
+     *
+     * @param id
+     * @return
+     */
     @CrossOrigin(origins = "*")
     @PostMapping("/post/{id}/downvote")
     public ResponseEntity<Post> incrementDownvote(@PathVariable Long id) {
@@ -99,6 +140,14 @@ public class PostController {
             return ResponseEntity.status(404).body(null);
         }
     }
+
+    /**
+     * Adds image to an existing post.
+     *
+     * @param postId
+     * @param file
+     * @return
+     */
     @CrossOrigin(origins = "*")
     @PostMapping("/post/{postId}/images")
     public ResponseEntity<Image> addPostImage(@PathVariable Long postId, @RequestParam("file") MultipartFile file) {
@@ -113,6 +162,12 @@ public class PostController {
         }
     }
 
+    /**
+     * Returns all images for a post by ID.
+     *
+     * @param postId
+     * @return
+     */
     @CrossOrigin(origins="*")
     @GetMapping("/post/{postId}/images")
     public ResponseEntity<List<Image>> getPostImages(@PathVariable Long postId) {
@@ -120,6 +175,12 @@ public class PostController {
         return ResponseEntity.ok(postService.getAllImagesOfPostById(postId));
     }
 
+    /**
+     * Returns S3 pre-signed image URLs of a post by ID.
+     *
+     * @param postId
+     * @return
+     */
     @CrossOrigin(origins="*")
     @GetMapping("/post/{postId}/images/urls")
     public ResponseEntity<List<String>> getPostImagesUrls(@PathVariable Long postId) {
