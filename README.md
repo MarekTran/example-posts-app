@@ -1,2 +1,2 @@
 # example-posts-app
-TODO finish readme :)
+My playground for testing out deployments, scaling and gitlab CI/CD.
