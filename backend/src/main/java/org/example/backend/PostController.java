@@ -23,6 +23,19 @@ public class PostController {
     @Autowired
     public PostController(PostService postService) { this.postService = postService; }
 
+
+    @CrossOrigin(origins = "*")
+    @PostMapping("/post/modify/approval")
+    public ResponseEntity<Post> modifyApproval(@RequestParam long postId, @RequestParam boolean approved) {
+        try {
+            return ResponseEntity.of(postService.modifyApproval(postId, approved));
+        } catch (PostNotFoundException e) {
+            return ResponseEntity.status(400).build();
+        } catch (PostNotSavedException e){
+            return ResponseEntity.status(500).build();
+        }
+    }
+
     /**
      * Handles GET requests to retrieve a post by its ID.
      *

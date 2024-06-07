@@ -1,8 +1,22 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useFetch } from '#app'
+interface Post {
+  id: number;
+  title: string;
+  content: string;
+  createdAt: string; // LocalDateTime will be a string in JSON
+  upvote: number;
+  downvote: number;
+  approved: boolean;
+  urls: string[];
+}
 
-const posts = ref([])
+
+
+const posts = ref<Post[]>([])
+const allowUnapproved = ref(false);
+
 
 const { data: cats } = await useAsyncData('cats', () => $fetch('https://api.thecatapi.com/v1/images/search',
   {
@@ -11,7 +25,8 @@ const { data: cats } = await useAsyncData('cats', () => $fetch('https://api.thec
       limit: 4
     }
   }
-)) 
+))
+
 const fetchPostUrls = async (postId) => {
   try {
     const urls = await $fetch(`/api/post/${postId}/images/urls`, {
@@ -70,11 +85,17 @@ onMounted(() => {
       <Carousel :cats="cats"/>
       <h1 class="text-5xl font-bold">Add Post</h1>
       <section class="min-h-[200px] w-full">
-      <AddPostForm @formSubmitted="fetchPosts()" />
+        <AddPostForm @formSubmitted="fetchPosts()" />
+      </section>
+      <section class="min-h-[100px] w-full rounded-xl bg-red-300/50 p-4">
+        <label for="allowUnapproved"> Show Unapproved</label>
+        <input id="allowUnapproved" type="checkbox" v-model="allowUnapproved" class="mx-1"/>
       </section>
       <h1 class="text-5xl font-bold">Posts</h1>
       <section class="w-full flex flex-col items-center justify-start bg-slate-200 rounded-xl space-y-4">
-        <Post v-for="post in posts" :key="post.id" :post="post" @postModified="handlePostModified"/>
+        <div v-for="post in posts" :key="post.id">
+          <Post :post="post" @postModified="handlePostModified" v-if="post.approved || allowUnapproved"/>
+        </div>
       </section>
     </main>
   </div>

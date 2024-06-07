@@ -22,7 +22,6 @@
 
 ### Create a New Post without Images
 **POST /post/add**
-
 - **Description**: Create a new post without images.
 - **Parameters**:
   - `post` (Post): Post object in the request body.

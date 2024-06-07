@@ -21,4 +21,6 @@ public class Post {
     private LocalDateTime createdAt;
     private int upvote;
     private int downvote;
+    @Column(nullable = false, updatable = true, columnDefinition = "boolean default false")
+    private boolean approved;
 }

@@ -4,12 +4,13 @@ import { initCarousels, } from 'flowbite'
 
 // Interface for the post object
 interface Post {
-  id: number; 
+  id: number;
   title: string;
   content: string;
-  createdAt: string; 
+  createdAt: string; // LocalDateTime will be a string in JSON
   upvote: number;
   downvote: number;
+  approved: boolean;
   urls: string[];
 }
 
@@ -59,38 +60,24 @@ const handleDownvote = async (postId: number) => {
   }
 };
 
-// const handleUpvote = async (postId: number) => {
-//   // Send a POST request to upvote the post.
-//   try {
-//     const response = await $fetch(`/api/post/${postId}/upvote`, {
-//       method: 'POST',
-//     })
-//     if (response.ok) {
-//       // Update the post object with the new upvote count
-//       props.post.upvote += 1;
-//       // emit('postUpvoted', props.post.id);
-//       emit('postModified');
-//     }
-//   } catch (error) {
-//     console.error('Error upvoting the post:', error);
-//   }
-// }
-// const handleDownvote = async (postId: number) => {
-//   // Send a POST request to upvote the post.
-//   try {
-//     const response = await $fetch(`/api/post/${postId}/downvote`, {
-//       method: 'POST',
-//     })
-//     if (response.ok) {
-//       // Update the post object with the new downvote count
-//       props.post.downvote += 1;
-//       // emit('postDownvoted', props.post.id);
-//       emit('postModified');
-//     }
-//   } catch (error) {
-//     console.error('Error upvoting the post:', error);
-//   }
-// }
+const modifyApproval = async (postId: number, approval: boolean) => {
+  console.log('Unapproving postID:', postId);
+  try {
+    const updatedPost = await $fetch(`/api/post/modify/approval`, {
+      method: 'POST',
+      params: { postId, approved: approval }
+    });
+    console.log(updatedPost);
+    if (updatedPost) {
+      props.post.approved = updatedPost.approved;
+      console.log('Post unapproved:', props.post);
+      emit('postModified', props.post);  // Emit the updated post
+    }
+  } catch (error) {
+    console.error('Error unapproving the post:', error);
+  }
+};
+
 
 </script>
 
@@ -148,6 +135,8 @@ const handleDownvote = async (postId: number) => {
     <!-- Carousel wrapper end-->
     <div class="flex w-full justify-between p-4">
       <button @click="handleUpvote(post.id)" class="bg-green-300 hover:bg-green-500 text-white font-bold py-2 px-2 rounded-full">Upvotes {{ post.upvote }} ⬆️</button>
+      <button @click="modifyApproval(post.id, false)" class="bg-blue-300 hover:bg-blue-500 text-white font-bold py-2 px-2 rounded-full">Unapprove ❌</button>
+      <button @click="modifyApproval(post.id, true)" class="bg-blue-300 hover:bg-blue-500 text-white font-bold py-2 px-2 rounded-full">Approve ✅</button>
       <button @click="handleDownvote(post.id)" class="bg-red-300 hover:bg-red-500 text-white font-bold py-2 px-2 rounded-full">Downvotes {{ post.downvote }} ⬇️</button>
     </div>
   </div>

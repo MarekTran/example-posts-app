@@ -180,4 +180,14 @@ public class PostService {
             uploadImage(post.getId(), file);
         }
     }
+
+    public Optional<Post> savePost(Post post) throws PostNotSavedException{
+        return Optional.of(postRepo.save(post));
+    }
+
+    public Optional<Post> modifyApproval(long postId, boolean approved) {
+        Post toModify = getPostById(postId);
+        toModify.setApproved(approved);
+        return savePost(toModify);
+    }
 }
