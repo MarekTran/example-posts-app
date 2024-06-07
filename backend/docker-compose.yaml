@@ -16,7 +16,7 @@ services:
   java-backend:
     restart: unless-stopped
     container_name: java-backend
-    image: tranek/example-post-backend:latest
+    image: registry.gitlab.com/marektran/example-post-backend:latest
     build: .
     # ports:
     #   - "8081:8080"

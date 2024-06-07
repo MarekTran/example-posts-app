@@ -11,15 +11,19 @@
 	"dockerComposeFile": "../docker-compose-dev.yaml",
 	"service": "devcontainer",
 	"workspaceFolder": "/workspaces/example-posts-app",
-	"extensions": [
-    "vue.volar",
-    "cpreston321.nuxt-vscode",
-    "bradlc.vscode-tailwindcss",
-		"austenc.tailwind-docs",
-    "ms-azuretools.vscode-docker",
-    "Gruntfuggly.todo-tree",
-    "esbenp.prettier-vscode"
-	]
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"vue.volar",
+				"cpreston321.nuxt-vscode",
+				"bradlc.vscode-tailwindcss",
+				"austenc.tailwind-docs",
+				"ms-azuretools.vscode-docker",
+				"Gruntfuggly.todo-tree",
+				"esbenp.prettier-vscode"
+			]
+		}
+	}
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
 

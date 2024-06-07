@@ -1,0 +1,21 @@
+variables:
+  REGISTRY_URL: registry.gitlab.com
+  REGISTRY_USER: marektran
+
+stages:
+  - build
+
+build_image:
+  stage: build
+  image: docker:26.1 # Docker client
+  services:
+    - docker:26.1-dind # Docker daemon
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"
+  before_script:
+    - docker login registry.gitlab.com -u $REGISTRY_USER -p $REGISTRY_PASS
+  script:
+    - docker build -t registry.gitlab.com/marektran/example-post-frontend:latest ./frontend
+    - docker build -t registry.gitlab.com/marektran/example-post-backend:latest ./backend
+    - docker push registry.gitlab.com/marektran/example-post-frontend:latest
+    - docker push registry.gitlab.com/marektran/example-post-backend:latest

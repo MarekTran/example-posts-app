@@ -5,9 +5,8 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: nuxt-frontend
-    image: tranek/example-post-frontend:latest
+    image: registry.gitlab.com/marektran/example-post-frontend:latest
     ports:
       - "3000:3000"
-      # - "4000:4000"
     environment:
       - NUXT_PROXY_URL=http://java-backend:8080
